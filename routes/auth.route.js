@@ -37,6 +37,9 @@ authRoute.post("/", async (req, res) => {
   await userModel.updateUser(user.user_id, "rf_token", refresh_token);
 
   return res.status(200).json({
+    user_id: user.user_id,
+    email: user.email,
+    name: user.name,
     access_token,
     refresh_token,
   });
