@@ -12,7 +12,7 @@ const questionModel = {
   },
 
   findQuestionsByGameId: async (game_id) => {
-    const questions = await db("game").where("game_id", game_id);
+    const questions = await db("question").where("game_id", game_id);
     return questions;
   },
 

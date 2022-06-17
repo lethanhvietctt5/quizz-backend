@@ -25,6 +25,18 @@ gameRoute.get("/:game_id", async (req, res) => {
   return res.status(200).json(game);
 });
 
+gameRoute.get("/all_games/:author_id", async (req, res) => {
+  const { author_id } = req.params;
+
+  if (!author_id) {
+    return res.status(400).send("Missing author_id");
+  }
+
+  const games = await gameModel.findGamesByAuthor(author_id);
+
+  return res.status(200).json(games);
+});
+
 gameRoute.post("/", async (req, res) => {
   const { author_id, name } = req.body;
 

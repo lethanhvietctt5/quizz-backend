@@ -21,6 +21,15 @@ questionRoute.get("/:question_id", async (req, res) => {
   return res.status(200).json(question);
 });
 
+questionRoute.get("/all_questions/:game_id", async (req, res) => {
+  const { game_id } = req.params;
+  if (!game_id) {
+    return res.status(400).json({ message: "Missing game_id" });
+  }
+  const questions = await questionModel.findQuestionsByGameId(game_id);
+  return res.status(200).json(questions);
+});
+
 questionRoute.post("/", async (req, res) => {
   const {
     question_id,

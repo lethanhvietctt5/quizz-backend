@@ -12,7 +12,7 @@ const gameModel = {
   },
 
   findGamesByAuthor: async (author_id) => {
-    const games = await db("user").where("author_id", author_id);
+    const games = await db("game").where("author_id", author_id);
     return games;
   },
 
