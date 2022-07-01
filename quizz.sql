@@ -54,6 +54,7 @@ CREATE TABLE `report` (
 	`report_id` VARCHAR(100) NOT NULL,
     `game_id` VARCHAR(100) NOT NULL,
     `pin_code` VARCHAR(6) NOT NULL,
+    `status` INTEGER DEFAULT 0,
     `started_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`report_id`),
     CONSTRAINT `fk_report_game` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
@@ -70,5 +71,17 @@ CREATE TABLE `player` (
     `correct_count` INT NOT NULL DEFAULT 0,
     `score` INT NOT NULL DEFAULT 0
 )
+
+
+-- ----------------------------
+-- Table structure for parameter
+-- ----------------------------
+DROP TABLE IF EXISTS `parameter`;
+CREATE TABLE `parameter` (
+	`key` VARCHAR(100) NOT NULL,
+    `value` VARCHAR(100) NOT NULL
+)
+INSERT INTO `parameter`
+VALUES ("last_pin", "100000");
 
 
