@@ -6,6 +6,7 @@ import registerRoute from "./routes/register.route.js";
 import authRoute from "./routes/auth.route.js";
 import gameRoute from "./routes/game.route.js";
 import questionRoute from "./routes/question.route.js";
+import reportRoute from "./routes/report.route.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/register", registerRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/game", gameRoute);
 app.use("/api/question", questionRoute);
+app.use("/api/report", reportRoute);
 
 app.use(function (req, res) {
   res.status(404).json({
