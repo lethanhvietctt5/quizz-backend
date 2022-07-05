@@ -61,9 +61,11 @@ io.on("connection", (socket) => {
     //host
 
     socket.on("start_game",()=>{
-        questionModel.findQuestionsByGameId(report.game_id).then(quests=>{
-            socket.to(report.pin_code).emit("questions", players)
-        })
+        if (userType === "host") {
+            questionModel.findQuestionsByGameId(report.game_id).then(quests=>{
+                socket.to(report.pin_code).emit("questions", quests)
+            })
+        }
     })
 });
 
