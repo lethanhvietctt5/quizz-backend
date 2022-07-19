@@ -1,8 +1,4 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import randomstring from "randomstring";
-import db from "../utils/db.js";
 import questionModel from "../models/question.model.js";
 
 const questionRoute = express.Router();

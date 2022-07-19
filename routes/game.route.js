@@ -1,8 +1,4 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import randomstring from "randomstring";
-import db from "../utils/db.js";
 import gameModel from "../models/game.model.js";
 import userModel from "../models/user.model.js";
 
@@ -35,6 +31,30 @@ gameRoute.get("/all_games/:author_id", async (req, res) => {
   const games = await gameModel.findGamesByAuthor(author_id);
 
   return res.status(200).json(games);
+});
+
+gameRoute.get("/getQuestions/:game_id", async (req, res) => {
+  const { game_id } = req.params;
+  if (!game_id) {
+    return res.status(400).json({ message: "game_id is required." });
+  }
+
+  const questions = await gameModel.getAllQuestions(game_id);
+
+  return res.status(200).json(questions);
+});
+
+gameRoute.get("/gameByReport/:report_id", async (req, res) => {
+  const { report_id } = req.params;
+
+  if (!report_id) {
+    return res.status(400).json({ message: "Invalid report_id." });
+  }
+
+  const game = await gameModel.findGameByReportId(report_id);
+
+  if (game) return res.status(200).json(game);
+  return res.status(400).json({ message: "Not found any game match." });
 });
 
 gameRoute.post("/", async (req, res) => {

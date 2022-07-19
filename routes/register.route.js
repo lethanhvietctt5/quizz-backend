@@ -1,8 +1,5 @@
-import express from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import randomstring from "randomstring";
-import db from "../utils/db.js";
+import express from "express";
 import userModel from "../models/user.model.js";
 
 const registerRoute = express.Router();

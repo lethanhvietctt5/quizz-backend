@@ -69,8 +69,10 @@ CREATE TABLE `player` (
     `name` VARCHAR(100) NOT NULL,
 	`report_id` VARCHAR(100) NOT NULL,
     `correct_count` INT NOT NULL DEFAULT 0,
-    `score` INT NOT NULL DEFAULT 0
-)
+    `score` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (`player_id`),
+    CONSTRAINT `fk_player_report` FOREIGN KEY (`report_id`) REFERENCES `report` (`report_id`)
+);
 
 
 -- ----------------------------
@@ -80,7 +82,7 @@ DROP TABLE IF EXISTS `parameter`;
 CREATE TABLE `parameter` (
 	`key` VARCHAR(100) NOT NULL,
     `value` VARCHAR(100) NOT NULL
-)
+);
 INSERT INTO `parameter`
 VALUES ("last_pin", "100000");
 

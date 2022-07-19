@@ -1,13 +1,13 @@
-import knex from "knex";
+import knex from 'knex';
 
 const db = knex({
-  client: "mysql2",
+  client: 'mysql2',
   connection: {
-    host: "127.0.0.1",
+    host: '127.0.0.1',
     port: 3306,
-    user: "root",
-    password: "root",
-    database: "quizz",
+    user: 'root',
+    password: 'root',
+    database: 'quizz',
   },
   pool: { min: 0, max: 10 },
 });

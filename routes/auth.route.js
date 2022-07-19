@@ -1,8 +1,7 @@
+import bcrypt from "bcryptjs";
 import express from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import randomstring from "randomstring";
-import db from "../utils/db.js";
 import userModel from "../models/user.model.js";
 
 const authRoute = express.Router();

@@ -1,105 +1,92 @@
-import express from "express";
-import morgan from "morgan";
-import cors from "cors";
+import cors from 'cors';
+import express from 'express';
 
-import registerRoute from "./routes/register.route.js";
-import authRoute from "./routes/auth.route.js";
-import gameRoute from "./routes/game.route.js";
-import questionRoute from "./routes/question.route.js";
-import reportRoute from "./routes/report.route.js";
-import {createServer} from "http";
-import {Server} from "socket.io";
-import enterGameRoute from "./routes/start_game.route.js";
-import ReportModel from "./models/report.model.js";
-import playerModel from "./models/player.model.js";
-import questionModel from "./models/question.model.js";
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import playerModel from './models/player.model.js';
+import questionModel from './models/question.model.js';
+import authRoute from './routes/auth.route.js';
+import gameRoute from './routes/game.route.js';
+import questionRoute from './routes/question.route.js';
+import registerRoute from './routes/register.route.js';
+import reportRoute from './routes/report.route.js';
+import enterGameRoute from './routes/start_game.route.js';
 
 const app = express();
 const httpServer = createServer(app);
 
-
 const io = new Server(httpServer, {
-    transports: ['websocket', 'polling', 'flashsocket'],
-    cors: {
-        origin: "*",
-        credentials: true
+  transports: ['websocket', 'polling', 'flashsocket'],
+  cors: {
+    origin: '*',
+    credentials: true,
+  },
+});
+
+io.on('connection', socket => {
+  socket.on('start_game', report_id => {
+    socket.join(report_id);
+  });
+
+  socket.on('join_game', async ({ report_id, name }) => {
+    const player = await playerModel.addPlayer(socket.id, report_id, name);
+    socket.join(report_id);
+    io.in(report_id).emit('new_player', player);
+  });
+
+  socket.on('play', report_id => {
+    io.in(report_id).emit('play');
+  });
+
+  socket.on('answer', async ({ report_id, question_id, answer, count_time }) => {
+    const question = await questionModel.findQuestionById(question_id);
+    if (question.correct_ans.includes(answer)) {
+      await playerModel.updateScore(socket.id, count_time * 100);
     }
+    const players = await playerModel.getAllPlayer(report_id);
+    io.in(report_id).emit('update_players', players);
+  });
+
+  socket.on('update_players', async report_id => {
+    const players = await playerModel.getAllPlayer(report_id);
+    io.in(report_id).emit('update_players', players);
+  });
+
+  socket.on('next', report_id => {
+    io.in(report_id).emit('next_question');
+  });
 });
-
-io.on("connection", (socket) => {
-    let report;
-    let userType = "user";
-    socket.on("user_type", (type) => {
-        userType = type  //type: host | user
-    })
-
-    socket.on("join", async (pin) => {
-            report = await ReportModel.findReportByPin(pin)
-            // console.log(socket.id);
-            if (!!report) {
-                socket.join(pin);
-                socket.emit("join_success")
-            }
-    })
-
-    //user
-
-    socket.on("enter_name", (name) => {
-        if (userType === "user") {
-            console.log("enter_name " + name)
-            if (!!report) {
-                playerModel.addPlayer(socket.id, report.report_id, name).then(player => {
-                    socket.emit("waiting")
-                    playerModel.getAllPlayer(report.report_id).then(players =>
-                        socket.to(report.pin_code).emit("new_list_player", players)
-                    )
-                })
-            }
-        }
-        //add db
-    })
-    //host
-
-    socket.on("start_game",()=>{
-        if (userType === "host") {
-            questionModel.findQuestionsByGameId(report.game_id).then(quests=>{
-                socket.to(report.pin_code).emit("questions", quests)
-            })
-        }
-    })
-});
-
 
 app.use(express.json());
-app.use(morgan("dev"));
+// app.use(morgan('dev'));
 app.use(
-    cors({
-        origin: "*",
-        methods: ["GET", "POST", "PATCH", "DELETE"],
-    })
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  }),
 );
 
-app.use("/api/register", registerRoute);
-app.use("/api/auth", authRoute);
-app.use("/api/game", gameRoute);
-app.use("/api/question", questionRoute);
-app.use("/api/report", reportRoute);
-app.use("/api/start_game", enterGameRoute);
+app.use('/api/register', registerRoute);
+app.use('/api/auth', authRoute);
+app.use('/api/game', gameRoute);
+app.use('/api/question', questionRoute);
+app.use('/api/report', reportRoute);
+app.use('/api/start_game', enterGameRoute);
 
 app.use(function (req, res) {
-    res.status(404).json({
-        error: "Endpoint not found.",
-    });
+  res.status(404).json({
+    error: 'Endpoint not found.',
+  });
 });
 
-app.use(function (err, req, res, next) {
-    console.log(err.stack);
-    res.status(500).json({
-        error: "Something wrong!",
-    });
+app.use(function (err, req, res) {
+  console.log(err.stack);
+  res.status(500).json({
+    error: 'Something wrong!',
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, function () {
-    console.log(`Quizz API is listening at http://localhost:${PORT}`);
+  console.log(`Quizz API is listening at http://localhost:${PORT}`);
 });
