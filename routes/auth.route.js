@@ -23,7 +23,7 @@ authRoute.post('/', async (req, res) => {
   }
 
   const access_token = jwt.sign(user, 'SECRET_KEY', {
-    expiresIn: '5s',
+    expiresIn: '7d',
   });
 
   const refresh_token = randomstring.generate(100);

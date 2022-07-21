@@ -1,6 +1,5 @@
 import express from 'express';
 import reportModel from '../models/report.model.js';
-import parameterModel from '../models/parameter.model.js';
 
 const enterGameRoute = express.Router();
 
@@ -11,14 +10,13 @@ enterGameRoute.post('/', async (req, res) => {
     return res.status(400).send('Missing game_id or name');
   }
 
-  let report;
-  let lastPin = parseInt(await parameterModel.get('last_pin'));
+  let pin = '';
 
-  if (!lastPin) {
-    lastPin = 100000;
+  for (let i = 0; i < 7; i++) {
+    pin = pin + Math.floor(Math.random() * 9);
   }
-  await parameterModel.set('last_pin', lastPin + 1);
-  report = await reportModel.createReport(game_id, lastPin.toString(), 1);
+
+  let report = await reportModel.createReport(game_id, pin, 1);
 
   if (!report) {
     return res.status(404).send('Start fail');

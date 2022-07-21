@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `report`;
 CREATE TABLE `report` (
 	`report_id` VARCHAR(100) NOT NULL,
     `game_id` VARCHAR(100) NOT NULL,
-    `pin_code` VARCHAR(6) NOT NULL,
+    `pin_code` VARCHAR(20) NOT NULL,
     `status` INTEGER DEFAULT 0,
 	`socket_id` VARCHAR(100),
     `started_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
