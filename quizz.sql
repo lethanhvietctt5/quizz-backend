@@ -55,6 +55,7 @@ CREATE TABLE `report` (
     `game_id` VARCHAR(100) NOT NULL,
     `pin_code` VARCHAR(6) NOT NULL,
     `status` INTEGER DEFAULT 0,
+	`socket_id` VARCHAR(100),
     `started_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`report_id`),
     CONSTRAINT `fk_report_game` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
@@ -70,7 +71,8 @@ CREATE TABLE `player` (
 	`report_id` VARCHAR(100) NOT NULL,
     `correct_count` INT NOT NULL DEFAULT 0,
     `score` INT NOT NULL DEFAULT 0,
-    PRIMARY KEY (`player_id`),
+    `status` INTEGER DEFAULT 1,
+    PRIMARY KEY (`player_id`, `report_id`),
     CONSTRAINT `fk_player_report` FOREIGN KEY (`report_id`) REFERENCES `report` (`report_id`)
 );
 

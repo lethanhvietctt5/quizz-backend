@@ -22,6 +22,14 @@ const playerModel = {
     return newPlayer[0];
   },
 
+  findByPlayerId: async player_id => {
+    const players = await db('player').where('player_id', player_id);
+
+    if (players.length === 0) return null;
+
+    return players;
+  },
+
   updateScore: async (player_id, score) => {
     const players = await db('player').where('player_id', player_id);
     if (players.length === 0) {
@@ -39,6 +47,14 @@ const playerModel = {
     } else {
       return null;
     }
+  },
+
+  updateStatus: async (player_id, report_id, status) => {
+    await db('player').where('player_id', player_id).where('report_id', report_id).update('status', status);
+  },
+
+  updateStatusPlayer: async (player_id, status) => {
+    await db('player').where('player_id', player_id).update('status', status);
   },
 };
 

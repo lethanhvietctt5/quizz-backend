@@ -50,6 +50,18 @@ const reportModel = {
     }
   },
 
+  updateSocketId: async (report_id, socket_id) => {
+    await db('report').where('report_id', report_id).update('socket_id', socket_id);
+  },
+
+  findReportBySocketId: async socket_id => {
+    const reports = await db('report').where('socket_id', socket_id);
+
+    if (reports.length === 0) return null;
+
+    return reports[0];
+  },
+
   selectAllReports: async author_id => {
     const reports = await db('report')
       .join('game', 'report.game_id', '=', 'game.game_id')
@@ -62,33 +74,24 @@ const reportModel = {
     return reports;
   },
 
-  // countPlayer: async () => {
-  //   const games = await db('player').where('game_id', game_id);
-  //   if (games.length === 0) {
-  //     return null;
-  //   }
-  //   return games[0];
-  // },
-
   findReportById: async report_id => {
     const report = (
       await db('report').join('game', 'report.game_id', '=', 'game.game_id').where('report.report_id', report_id)
     )[0];
-    const count_players = (await db('player').count('player_id as count').where('report_id', report_id))[0].count;
-    report['count_players'] = count_players;
-    const count_questions = (await db('question').count('question_id as count').where('game_id', report.game_id))[0]
-      .count;
-    report['count_questions'] = count_questions;
-    return report;
+    if (report) {
+      const count_players = (await db('player').count('player_id as count').where('report_id', report_id))[0].count;
+      report['count_players'] = count_players;
+      const count_questions = (await db('question').count('question_id as count').where('game_id', report.game_id))[0]
+        .count;
+      report['count_questions'] = count_questions;
+      return report;
+    }
+
+    return null;
   },
 
   selectListPlayers: async report_id => {
     const players = await db('player').where('report_id', report_id);
-    return players;
-  },
-
-  selectListQuestions: async game_id => {
-    const players = await db('question').where('game_id', game_id);
     return players;
   },
 };

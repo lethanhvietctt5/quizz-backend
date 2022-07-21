@@ -19,6 +19,12 @@ const userModel = {
     return user[0];
   },
 
+  findUserByRfToken: async refreshToken => {
+    const user = await db('user').where('rf_token', refreshToken);
+    if (user.length === 0) return null;
+    return user[0];
+  },
+
   updateUser: async (user_id, field, value) => {
     if (field === 'user_id') return null;
 
