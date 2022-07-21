@@ -1,0 +1,44 @@
+{
+  "name": "quizz-backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "repository": "https://github.com/lethanhvietctt5/quizz-backend.git",
+  "author": "lethanhvietctt5 <lethanhviet7c@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "lint": "yarn run eslint src",
+    "lint:fix": "yarn run eslint --fix src",
+    "prettify": "prettier --write \"./**/*.{js,ts,jsx,tsx,json}\"",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "husky": "^8.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.1.0",
+    "lint-staged": "^13.0.3",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "randomstring": "^1.2.2",
+    "socket.io": "^4.5.1",
+    "uuid": "^8.3.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "yarn run eslint --fix"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.7.1"
+  }
+}
