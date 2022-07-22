@@ -21,7 +21,7 @@ export default function socketFunc(io) {
 
     socket.on('answer', async ({ report_id, question_id, answer, count_time }) => {
       const question = await questionModel.findQuestionById(question_id);
-      if (question.correct_ans.includes(answer)) {
+      if (answer && answer.length > 0 && question.correct_ans.includes(answer)) {
         await playerModel.updateScore(socket.id, count_time * 100);
       }
       const players = await playerModel.getAllPlayer(report_id);
@@ -30,8 +30,10 @@ export default function socketFunc(io) {
 
     socket.on('update_players', async report_id => {
       let players = await playerModel.getAllPlayer(report_id);
-      players = players.filter(player => player.status == 1);
-      io.in(report_id).emit('update_players', players);
+      if (players) {
+        players = players.filter(player => player.status == 1);
+        io.in(report_id).emit('update_players', players);
+      }
     });
 
     socket.on('next', report_id => {
